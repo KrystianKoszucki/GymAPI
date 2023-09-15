@@ -20,6 +20,7 @@ builder.Services.AddScoped<IGymService, GymService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -39,6 +40,12 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<RequestTimeMiddleware>();
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI(a =>
+{
+    a.SwaggerEndpoint("/swagger/v1/swagger.json", "Gym API");
+});
 
 app.UseAuthorization();
 
