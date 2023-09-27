@@ -91,3 +91,7 @@ C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\dotnet_web\GymAPI\GymAPI\obj\Debug\net6.0\GymAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\FluentValidation.dll
+C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\FluentValidation.AspNetCore.dll
+C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\dotnet_web\GymAPI\GymAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
