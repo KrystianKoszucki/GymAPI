@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using GymAPI.Authorization;
 using GymAPI.Exceptions;
 using GymAPI.Models;
 using GymAPI.ModelsDTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace GymAPI.Services
 {
@@ -20,12 +23,17 @@ namespace GymAPI.Services
         private readonly GymDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<GymService> _logger;
-        
-        public GymService(GymDbContext dbContext, IMapper mapper, ILogger<GymService> logger)
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
+
+        public GymService(GymDbContext dbContext, IMapper mapper, ILogger<GymService> logger,
+             IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _logger = logger;
+            _authorizationService= authorizationService;
+            _userContextService = userContextService;
         }
         public TrainingDto GetById(int id)
         {
@@ -58,6 +66,7 @@ namespace GymAPI.Services
         public int Create(CreateTrainingDto model)
         {
             var training = _mapper.Map<Training>(model);
+            training.CreatedById = _userContextService.GetUserId;
             _dbContext.Trainings.Add(training);
             _dbContext.SaveChanges();
             return training.Id;
@@ -75,6 +84,13 @@ namespace GymAPI.Services
             {
                 throw new NotFoundException("Training not found");
             }
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, training,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             _dbContext.Trainings.Remove(training);
             _dbContext.SaveChanges();
@@ -90,6 +106,15 @@ namespace GymAPI.Services
             {
                 throw new NotFoundException("Training not found");
             }
+
+            var authorizationResult= _authorizationService.AuthorizeAsync(_userContextService.User, training,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
             training.Name = model.Name;
             training.Day= model.Day;
             training.PushOrPull= model.PushOrPull;

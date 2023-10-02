@@ -4,11 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using GymAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace GymAPI.Controllers
 {
     [Route("api/gym")]
     [ApiController]
+    [Authorize(Roles ="Admin,Manager")]
+
     public class GymController : ControllerBase
     {
         private readonly IGymService _gymService;
@@ -18,14 +22,15 @@ namespace GymAPI.Controllers
             _gymService = gymService;
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdateTrainingDto training, [FromRoute] int id)
         {
-            _gymService.Update(id, training);           
+            _gymService.Update(id, training);
 
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<TrainingDto>> GetAll()
         {
@@ -36,6 +41,7 @@ namespace GymAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<TrainingDto> GetById([FromRoute] int id)
         {
             var training = _gymService.GetById(id);
