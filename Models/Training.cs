@@ -6,6 +6,8 @@
         public string Name { get; set; }
         public TrainingDay Day { get; set; }
         public PushOrPull PushOrPull { get; set; }
+        public int? CreatedById { get; set; }
+        public virtual User CreatedBy { get; set; }
         
 
 
